@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row text-center" style="width: 100%;margin-top: 100px;">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6 text-center">
+                    <h3 class="pagetitle">{{object}}</h3>
+        </div>
+</div>
+<div class="row text-center" style="width: 100%;">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3"><a class="btn btn-success" href="{% url 'addmcq' pk=pk%}" style="width:100%;">Add MCQ</a></div>
+        <div class="col-sm-3"><a class="btn btn-success" href="{% url 'addquestion' pk=pk%}" style="width:100%;"">Add Question</a></div>
+        <div class="col-sm-3"></div>
+</div>
+<div class="row text-center" style="width: 100%;">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6 text-center" style="width: 100%;margin-top: 20px;">
+                    <h4 class="pagetitle">Questions</h4>
+        </div>
+</div>
+<div class="row text-center" style="width: 100%;">
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6 text-left">
+        <ul class="list-group" style="width: 100%; margin-top:20px;">
+                {% for q in object.questions.all %}
+                <li class="list-group-item" style="padding:5px;">
+                        <div class="row text-left" style="width: 100%;">
+                                <div class="col-sm-6">{{forloop.counter}} - {{q}}</div>
+                                <div class="col-sm-3"><a href="{% url 'updatequestion' pk2=object.pk pk=q.pk%}" class="btn btn-success" style="width:100%;">Edit</a></div>
+                                <div class="col-sm-3"><a href="{% url 'deletequestion' pk2=object.pk pk=q.pk%}" class="btn btn-danger" style="width:100%;">Delete</a></div>
+
+                        </div>
+                </li>
+                {% endfor%}
+        </ul>
+  </div>
+</div>
+<div class="row text-center" style="width: 100%;">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6 text-center" style="width: 100%;margin-top: 20px;">
+                    <h4 class="pagetitle">MCQ's</h4>
+        </div>
+</div>
+<div class="row text-center" style="width: 100%;">
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6 text-left">
+        <ul class="list-group" style="width: 100%; margin-top:20px;">
+                {% for q in object.mcqs.all %}
+                <li class="list-group-item" style="padding:5px;">
+                        <div class="row text-left" style="width: 100%;">
+                                <div class="col-sm-3">{{forloop.counter}} - {{q}}</div>
+                                <div class="col-sm-3"><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal{{q.pk}}" style="width:100%;">Add choices</button></div>
+                                <div class="col-sm-3"><a href="{% url 'updatemcq' pk2=object.pk pk=q.pk%}" class="btn btn-success" style="width:100%;">Edit</a></div>
+                                <div class="col-sm-3"><a href="{% url 'deletemcq' pk2=object.pk pk=q.pk%}" class="btn btn-danger" style="width:100%;">Delete</a></div>
+                                <div class="modal fade" id="myModal{{q.pk}}" role="dialog">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                              <h4 class="modal-title">Add Choice</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                        <div class="col-sm-6">
+                                                                <input id='input{{q.pk}}' type='text' style="width:100%;"/>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                                <button class="btn btn-success" style="width:100%;" onclick="javascript:addchoice({{ q.pk }})">Add</button>
+                                                        </div>
+                                                </div>
+                                                <div class="row">
+                                                        <div class="col-sm-12">
+                                                                <div class="alert alert-danger" id="alert{{q.pk}}" style="display: none;">
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                                <div class="row">
+                                                        <div class="col-sm-12">
+                                                                <div class="alert alert-success" id="success{{q.pk}}" style="display: none;">
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="row text-left" style="width: 100%;">
+                                <div class="col-sm-12 text-center">choices</div>
+                                <ul>
+                                {%for c in q.choices.all%}
+                                        <li>{{forloop.counter}} - {{c}}</li>
+                                {% empty %}
+                                        <li>no choices</li>
+                                {%endfor%}
+                                </ul>
+                        </div>
+                </li>
+                {% endfor%}
+        </ul>
+  </div>
+</div>
+<script>
+        function addchoice(id){
+                document.getElementById('alert'+id).style.display="none";
+                document.getElementById('success'+id).style.display="none";
+                data={}
+                data['id']=id;
+                data['value']=document.getElementById('input'+id).value;
+                if(data['value']==''){
+                        document.getElementById('alert'+id).style.display="block";
+                        document.getElementById('alert'+id).innerText="choice name empty";
+                }
+                let csrftoken = getCookie('csrftoken');
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                                if(this.responseText=='failed'){
+                                        document.getElementById('alert'+id).style.display="block";
+                                        document.getElementById('alert'+id).innerText="fail to add choice check value and refresh page";
+                                }else{
+                                        document.getElementById('success'+id).style.display="block";
+                                        document.getElementById('success'+id).innerText="Added succesfully";
+                                }
+                        }
+                };
+                xhttp.open("POST", "/detailform/{{object.pk}}/mcq/"+id+"/addchoice");
+                xhttp.setRequestHeader('X-CSRFToken', csrftoken);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send(JSON.stringify(data));
+        }
+        function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                }
+                }
+        }
+        return cookieValue;
+        }
+</script>
+    
+{% endblock %}

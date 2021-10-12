@@ -1,0 +1,73 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <title>Questions</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <style type="text/css">
+  body,html{
+    min-height: 100vh;
+    width: 100%;
+  }
+  .content{
+      margin:0px !important;
+      margin-top:20px;
+      padding:0px;
+      margin-left:-3%;
+  }
+  .nav{
+      padding-top: 10px;
+      padding-left: 5%;
+      padding-right: 5%;
+  }
+  .row{
+      margin: 0px !important;
+      width:100%;
+  }
+  </style>
+  {% block style%}
+  {% endblock %}
+</head>
+<body>
+  <div class="row header">
+      <nav class="navbar navbar-default">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="navitem name" href="/">Home</a></li>
+                    {% if user.is_authenticated %}
+                        {% if user.is_superuser %}
+                        <li><a class="navitem name" href=" {% url 'forms'%}">Forms</a></li>
+                        <li><a class="navitem name" href=" {% url 'submissions'%}">Submissions</a></li>
+                        {%endif%}
+                        
+                    <li><a class="navitem name" href=" {% url 'logout'%}">Logout</a></li>     
+                    {% endif %}
+                </ul>
+                <ul class="nav navbar-nav navbar-left">
+                    <li style="height:28px;"><a class="navbar-brand navitem name" href="/">Purism</a></li>
+                    <li><a class="navbar-brand navitem name" href="#">{{ user.username }}</a></li>
+                </ul>
+            </div>
+        </nav>
+  </div>
+    <div class="row main">
+        <div class="col-sm-12 col-xs-12 content">
+                {% block content %}
+                {% endblock %}
+        </div>
+    </div>
+</body>
+
+</html>

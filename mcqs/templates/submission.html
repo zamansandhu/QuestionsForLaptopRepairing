@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6 text-left">
+        <h1> Fill the Form</h1>
+        <h2> {{object}}</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6 text-left">
+        {% if error%}
+            <div class="alert alert-success">
+                Failed to Submit Try Again
+            </div>
+        {% else %}
+            <div class="alert alert-success">
+                Submitted succesfully
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row text-center" style="width: 100%;margin-top: 100px;">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8 text-center">
+                    <h3 class="pagetitle">Questions Submitted by {{object.submittedby}}</h3>
+        </div>
+</div>
+<div class="row text-center" style="width: 100%;">
+  <div class="col-sm-2"></div>
+  <div class="col-sm-8 text-left">
+        <ul class="list-group" style="width: 100%; margin-top:20px;">
+                {% for q in object.questions.all %}
+                <li class="list-group-item" style="padding:5px;">
+                        <div class="row text-left" style="width: 100%;">
+                                <div class="col-sm-12">{{forloop.counter}} - {{q}}</div>
+
+                        </div>
+                        <div class="row text-left" style="width: 100%;">
+                                <div class="col-sm-12">Answer: {{q.answer}}</div>
+                        </div>
+                </li>
+                {% endfor%}
+                {% for q in object.mcqs.all %}
+                <li class="list-group-item" style="padding:5px;">
+                        <div class="row text-left" style="width: 100%;">
+                                <div class="col-sm-12">{{forloop.counter}} - {{q}}</div>
+                        </div>
+                        <div class="row text-left" style="width: 100%;">
+                                <div class="col-sm-12">Answer: - {{q.answer}}</div>
+                        </div>
+                </li>
+                {% endfor%}
+        </ul>
+  </div>
+</div>
+{% endblock %}

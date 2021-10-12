@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6 text-left">
+        <h1> Fill the Form</h1>
+        <h2> {{object}}</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6 text-left">
+        <ul class="list-group">
+            {% if object.questions.all|length > 0 and object.mcqs.all|length > 0%}
+            <form method="Post" action="{% url 'formfill' pk=object.pk%}">
+                {% csrf_token %}
+                {%for q in object.questions.all%}
+                <li class="list-group-item" >
+                    {{q}}
+                    <input name='question-{{q.pk}}' type='text' style="width:100%;" required/>
+                </li>
+                
+                {%endfor%}
+                {%for q in object.mcqs.all%}
+                <li class="list-group-item" >
+                    {{q}}
+                    <select name='mcq-{{q.pk}}' type='text' style="width:100%;" required>
+                        {%for c in q.choices.all%}
+                            <option value="{{c}}">{{c}}</option>
+                        {%endfor%}
+                    <select>
+                </li>
+                
+                {%endfor%}
+                <li class="list-group-item" >
+                    <input type='submit' value='Submit' class="btn btn-info btn-primary custombtn" >
+                </li>
+            </form>
+            {% else %}
+                <li class="list-group-item" >
+                    No questions added in this Survey Yet
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
